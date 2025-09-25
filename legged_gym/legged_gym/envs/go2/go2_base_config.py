@@ -37,6 +37,7 @@ class Go2BaseCfg( LeggedRobotCfg ):
             "last_actions",
             "height_measurements",
             "engaging_block",
+            "sidewall_distance"
         ]
 
     class sensor:
@@ -46,25 +47,74 @@ class Go2BaseCfg( LeggedRobotCfg ):
             latency_resampling_time = 5.0 # [s]
 
     class terrain:
-        selected = "TerrainPerlin"
+        # selected = "TerrainPerlin"
         mesh_type = None
+        curriculum = False
+
         measure_heights = True
         # x: [-0.5, 1.5], y: [-0.5, 0.5] range for go2
         measured_points_x = [i for i in np.arange(-0.5, 1.51, 0.1)]
         measured_points_y = [i for i in np.arange(-0.5, 0.51, 0.1)]
+
         horizontal_scale = 0.025 # [m]
         vertical_scale = 0.005 # [m]
         border_size = 5 # [m]
-        curriculum = False
         static_friction = 1.0
         dynamic_friction = 1.0
         restitution = 0.
         max_init_terrain_level = 5 # starting curriculum state
         terrain_length = 4.
         terrain_width = 4.
+        slope_treshold = 1.
+    
         num_rows= 16 # number of terrain rows (levels)
         num_cols = 16 # number of terrain cols (types)
-        slope_treshold = 1.
+
+        selected = "BarrierTrack"
+        BarrierTrack_kwargs = dict(
+            options= [
+                # "jump",
+                # "crawl",
+                # "tilt",
+                # "leap",
+            ], # each race track will permute all the options
+            track_width= 1.6,
+            track_block_length= 2., # the x-axis distance from the env origin point
+            wall_thickness= (0.04, 0.2), # [m]
+            wall_height= -0.05,
+            jump= dict(
+                height= (0.2, 0.6),
+                depth= (0.1, 0.8), # size along the forward axis
+                fake_offset= 0.0, # [m] an offset that make the robot easier to get into the obstacle
+                jump_down_prob= 0., # probability of jumping down use it in non-virtual terrain
+            ),
+            crawl= dict(
+                height= (0.25, 0.5),
+                depth= (0.1, 0.6), # size along the forward axis
+                wall_height= 0.6,
+                no_perlin_at_obstacle= False,
+            ),
+            tilt= dict(
+                width= (0.24, 0.32),
+                depth= (0.4, 1.), # size along the forward axis
+                opening_angle= 0.0, # [rad] an opening that make the robot easier to get into the obstacle
+                wall_height= 0.5,
+            ),
+            leap= dict(
+                length= (0.2, 1.0),
+                depth= (0.4, 0.8),
+                height= 0.2,
+            ),
+            add_perlin_noise= True,
+            border_perlin_noise= True,
+            border_height= 0.,
+            virtual_terrain= False,
+            draw_virtual_terrain= True,
+            engaging_next_threshold= 1.2,
+            engaging_finish_threshold= 0.,
+            curriculum_perlin= False,
+            no_perlin_threshold= 0.1,
+        )
 
         TerrainPerlin_kwargs = dict(
             zScale= 0.07,
@@ -248,13 +298,13 @@ class Go2BaseCfgPPO( LeggedRobotCfgPPO ):
             hidden_sizes = [128, 64]
             nonlinearity = "CELU"
         # configs for (critic) encoder
-        encoder_component_names = ["height_measurements"]
+        encoder_component_names = ["height_measurements", "engaging_block"]
         encoder_class_name = "MlpModel"
         class encoder_kwargs:
             hidden_sizes = [128, 64]
             nonlinearity = "CELU"
         encoder_output_size = 32
-        critic_encoder_component_names = ["height_measurements"]
+        critic_encoder_component_names = ["height_measurements", "engaging_block"]
         init_noise_std = 0.5
         # configs for policy: using recurrent policy with GRU
         rnn_type = 'gru'

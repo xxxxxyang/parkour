@@ -16,6 +16,7 @@ class Go2CrawlCfg( Go2FieldCfg ):
             "last_actions",
             "height_measurements",
             "engaging_block",
+            "sidewall_distance"
         ]
 
     #### uncomment this to train non-virtual terrain
@@ -126,8 +127,8 @@ class Go2CrawlCfgPPO( Go2FieldCfgPPO ):
     
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_crawl"
-        resume = True
-        load_run = "{Your traind walking model directory}"
+        resume = False
+        load_run = "/home/yjh/parkour/legged_gym/logs/base_go2/Sep25_13-38-32_Go2Base_pEnergy-2e-05_pDofErr-1e-02_pDofErrN-1e+00_pStand-2e+00_noResume"
         # load_run = "{Your virtually trained crawling model directory}"
 
         run_name = "".join(["Skills_",

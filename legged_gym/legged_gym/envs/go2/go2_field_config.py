@@ -3,19 +3,20 @@ import numpy as np
 from os import path as osp
 from collections import OrderedDict
 
-from legged_gym.envs.go2.go2_config import Go2RoughCfg, Go2RoughCfgPPO
+# from legged_gym.envs.go2.go2_config import Go2RoughCfg, Go2RoughCfgPPO
+from legged_gym.envs.go2.go2_base_config import Go2BaseCfg, Go2BaseCfgPPO
 
-class Go2FieldCfg( Go2RoughCfg ):
-    class init_state( Go2RoughCfg.init_state ):
+class Go2FieldCfg( Go2BaseCfg ):
+    class init_state( Go2BaseCfg.init_state ):
         pos = [0.0, 0.0, 0.7]
         zero_actions = False
 
-    class sensor( Go2RoughCfg.sensor):
-        class proprioception( Go2RoughCfg.sensor.proprioception ):
+    class sensor( Go2BaseCfg.sensor):
+        class proprioception( Go2BaseCfg.sensor.proprioception ):
             # latency_range = [0.0, 0.0]
             latency_range = [0.005, 0.045] # [s]
 
-    class terrain( Go2RoughCfg.terrain ):
+    class terrain( Go2BaseCfg.terrain ):
         num_rows = 10
         num_cols = 40
         selected = "BarrierTrack"
@@ -131,11 +132,11 @@ class Go2FieldCfg( Go2RoughCfg ):
             n_obstacles_per_track= 1,
         )
 
-    class commands( Go2RoughCfg.commands ):
+    class commands( Go2BaseCfg.commands ):
         # a mixture of command sampling and goal_based command update allows only high speed range
         # in x-axis but no limits on y-axis and yaw-axis
         lin_cmd_cutoff = 0.2
-        class ranges( Go2RoughCfg.commands.ranges ):
+        class ranges( Go2BaseCfg.commands.ranges ):
             # lin_vel_x = [0.6, 1.8]
             lin_vel_x = [-0.6, 2.0]
         
@@ -148,11 +149,11 @@ class Go2FieldCfg( Go2RoughCfg ):
             follow_cmd_cutoff = True
             x_stop_by_yaw_threshold = 1. # stop when yaw is over this threshold [rad]
 
-    class asset( Go2RoughCfg.asset ):
+    class asset( Go2BaseCfg.asset ):
         terminate_after_contacts_on = []
         penalize_contacts_on = ["thigh", "calf", "base"]
 
-    class termination( Go2RoughCfg.termination ):
+    class termination( Go2BaseCfg.termination ):
         roll_kwargs = dict(
             threshold= 1.4, # [rad]
         )
@@ -162,7 +163,7 @@ class Go2FieldCfg( Go2RoughCfg ):
         timeout_at_border = True
         timeout_at_finished = False
 
-    class rewards( Go2RoughCfg.rewards ):
+    class rewards( Go2BaseCfg.rewards ):
         class scales:
             tracking_lin_vel = 1.
             tracking_ang_vel = 1.
@@ -179,7 +180,7 @@ class Go2FieldCfg( Go2RoughCfg ):
             # penetration penalty
             penetrate_depth = -0.05
 
-    class noise( Go2RoughCfg.noise ):
+    class noise( Go2BaseCfg.noise ):
         add_noise = False
 
     class curriculum:
@@ -188,11 +189,11 @@ class Go2FieldCfg( Go2RoughCfg ):
         no_moveup_when_fall = True
     
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
-class Go2FieldCfgPPO( Go2RoughCfgPPO ):
-    class algorithm( Go2RoughCfgPPO.algorithm ):
+class Go2FieldCfgPPO( Go2BaseCfgPPO ):
+    class algorithm( Go2BaseCfgPPO.algorithm ):
         entropy_coef = 0.0
 
-    class runner( Go2RoughCfgPPO.runner ):
+    class runner( Go2BaseCfgPPO.runner ):
         experiment_name = "field_go2"
 
         resume = True

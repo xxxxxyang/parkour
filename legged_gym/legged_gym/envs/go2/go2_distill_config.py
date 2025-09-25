@@ -5,7 +5,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from legged_gym.utils.helpers import merge_dict
-from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2RoughCfgPPO
+from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
 
 multi_process_ = True
 class Go2DistillCfg( Go2FieldCfg ):
@@ -168,7 +168,7 @@ class Go2DistillCfgPPO( Go2FieldCfgPPO ):
                 ("height_measurements", (1, 21, 11)),
             ])
 
-    class policy( Go2RoughCfgPPO.policy ):
+    class policy( Go2BaseCfgPPO.policy ):
         # configs for estimator module
         estimator_obs_components = [
             "ang_vel",

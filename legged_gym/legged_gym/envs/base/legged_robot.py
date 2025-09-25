@@ -361,6 +361,44 @@ class LeggedRobot(BaseTask):
 
     def _get_forward_depth_obs(self, privileged= False):
         return torch.stack(self.sensor_tensor_dict["forward_depth"]).flatten(start_dim= 1)
+    
+    def _get_engaging_block_obs(self, privileged= False):
+        """ Compute the obstacle info for the robot """
+        if not self.check_BarrierTrack_terrain():
+            # This could be wrong, check BarrierTrack implementation to get the exact shape.
+            raise NotImplementedError("Only BarrierTrack terrain is supported for now.")
+        base_positions = self.root_states[:, 0:3] # (n_envs, 3)
+        self.refresh_volume_sample_points()
+        engaging_block_distance = self.terrain.get_engaging_block_distance(
+            base_positions,
+            self.volume_sample_points - base_positions.unsqueeze(-2), # (n_envs, n_points, 3)
+        ) # (num_envs,)
+        engaging_block_types = self.terrain.get_engaging_block_types(
+            base_positions,
+            self.volume_sample_points - base_positions.unsqueeze(-2), # (n_envs, n_points, 3)
+        ) # (num_envs,)
+        engaging_block_type_onehot = torch.zeros(
+            (self.num_envs, self.terrain.max_track_options),
+            device= self.sim_device,
+            dtype= torch.float,
+        )
+        engaging_block_type_onehot.scatter_(1, engaging_block_types.unsqueeze(1), 1.)
+        engaging_block_info = self.terrain.get_engaging_block_info(
+            base_positions,
+            self.volume_sample_points - base_positions.unsqueeze(-2), # (n_envs, n_points, 3)
+        ) # (num_envs, obstacle_info_dim)
+        engaging_block_obs = torch.cat([
+            engaging_block_distance.unsqueeze(-1),
+            engaging_block_type_onehot,
+            engaging_block_info,
+        ], dim= -1) # (num_envs, 1 + (max_obstacle_types + 1) + obstacle_info_dim)
+        return engaging_block_obs
+
+    def _get_sidewall_distance_obs(self, privileged= False):
+        if not self.check_BarrierTrack_terrain():
+            return torch.zeros((self.num_envs, 2), device= self.sim_device)
+        base_positions = self.root_states[:, 0:3] # (n_envs, 3)
+        return self.terrain.get_sidewall_distance(base_positions)
 
     ##### The wrapper function to build and help processing observations #####
     def _get_obs_from_components(self, components: list, privileged= False):
@@ -375,6 +413,12 @@ class LeggedRobot(BaseTask):
             )
         obs = torch.cat(obs, dim= 1)
         return obs
+
+    def check_BarrierTrack_terrain(self):
+        if getattr(self.cfg.terrain, "pad_unavailable_info", False):
+            return self.cfg.terrain.selected == "BarrierTrack"
+        assert self.cfg.terrain.selected == "BarrierTrack", "This implementation is only for BarrierTrack terrain"
+        return True
 
     # defines observation segments, which tells the order of the entire flattened obs
     def get_obs_segment_from_components(self, components):
@@ -410,6 +454,16 @@ class LeggedRobot(BaseTask):
             # base mass (payload)
             # motor strength for each joint
             segments["robot_config"] = (1 + 3 + 1 + self.num_actions,)
+        if "engaging_block" in components:
+            if not self.check_BarrierTrack_terrain():
+                # This could be wrong, please check the implementation of BarrierTrack
+                raise NotImplementedError("Only BarrierTrack terrain is supported for now.")
+            else:
+                segments["engaging_block"] = \
+                    (1 + self.terrain.max_track_options + self.terrain.block_info_dim,)
+        if "sidewall_distance" in components:
+            self.check_BarrierTrack_terrain()
+            segments["sidewall_distance"] = (2,)
         return segments
 
     def get_num_obs_from_components(self, components):
@@ -941,6 +995,16 @@ class LeggedRobot(BaseTask):
         if not hasattr(self.cfg.noise.noise_scales, "robot_config"):
             return
         noise_vec[:] = self.cfg.noise.noise_scales.robot_config * self.cfg.noise.noise_level * getattr(self.obs_scales, "robot_config", 1.)
+
+    def _write_engaging_block_noise(self, noise_vec):
+        if not hasattr(self.cfg.noise.noise_scales, "engaging_block"):
+            return
+        noise_vec[:] = self.cfg.noise.noise_scales.engaging_block * self.cfg.noise.noise_level * self.obs_scales.engaging_block
+    
+    def _write_sidewall_distance_noise(self, noise_vec):
+        if not hasattr(self.cfg.noise.noise_scales, "sidewall_distance"):
+            return
+        noise_vec[:] = self.cfg.noise.noise_scales.sidewall_distance * self.cfg.noise.noise_level * self.obs_scales.sidewall_distance
 
     #----------------------------------------
     def _init_buffers(self):

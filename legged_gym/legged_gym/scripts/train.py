@@ -43,6 +43,12 @@ from legged_gym.debugger import break_into_debugger
 
 def train(args):
     env, env_cfg = task_registry.make_env(name=args.task, args=args)
+    # DEBUG: 打印 obs layout 与维度，帮助定位 RNN/模型输入不匹配问题
+    print("CONFIG task:", args.task)
+    print("env_cfg.env.obs_components:", getattr(env_cfg.env, "obs_components", None))
+    print("env.obs_segments:", getattr(env, "obs_segments", None))
+    print("env.num_obs:", getattr(env, "num_obs", None))
+    print("env.num_privileged_obs:", getattr(env, "num_privileged_obs", None))
     ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, env_cfg=env_cfg)
     ppo_runner.learn(num_learning_iterations=train_cfg.runner.max_iterations, init_at_random_ep_len=True)
 

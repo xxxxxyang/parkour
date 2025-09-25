@@ -454,20 +454,20 @@ class LeggedRobotFieldMixin:
         """ Observation segment is defined as a list of lists/ints defining the tensor shape with
         corresponding order.
         """
-        segments = super().get_obs_segment_from_components(components)
+        obs_segments = super().get_obs_segment_from_components(components)
     
-        if "engaging_block" in components:
-            if not self.check_BarrierTrack_terrain():
-                # This could be wrong, please check the implementation of BarrierTrack
-                raise NotImplementedError("Only BarrierTrack terrain is supported for now.")
-            else:
-                segments["engaging_block"] = \
-                    (1 + self.terrain.max_track_options + self.terrain.block_info_dim,)
-        if "sidewall_distance" in components:
-            self.check_BarrierTrack_terrain()
-            segments["sidewall_distance"] = (2,)
-        
-        return segments
+        # if "engaging_block" in components:
+        #     if not self.check_BarrierTrack_terrain():
+        #         # This could be wrong, please check the implementation of BarrierTrack
+        #         raise NotImplementedError("Only BarrierTrack terrain is supported for now.")
+        #     else:
+        #         obs_segments["engaging_block"] = \
+        #             (1 + self.terrain.max_track_options + self.terrain.block_info_dim,)
+        # if "sidewall_distance" in components:
+        #     self.check_BarrierTrack_terrain()
+        #     obs_segments["sidewall_distance"] = (2,)
+
+        return obs_segments
 
     ##### Additional rewards #####
     def _reward_world_vel_l2norm(self):
