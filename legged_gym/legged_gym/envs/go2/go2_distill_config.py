@@ -56,12 +56,12 @@ class Go2DistillCfg( Go2FieldCfg ):
             obs_components = ["forward_depth"]
             resolution = [int(480/4), int(640/4)]
             position = dict(
-                mean= [0.24, -0.0175, 0.12],
-                std= [0.01, 0.0025, 0.03],
+                mean= [0.32, 0.0, 0.035],
+                std= [0.01, 0.01, 0.01],
             )
             rotation = dict(
-                lower= [-0.1, 0.37, -0.1],
-                upper= [0.1, 0.43, 0.1],
+                lower= [-0.1, -0.1, -0.1],
+                upper= [0.1, 0.1, 0.1],
             )
             resized_resolution = [48, 64]
             output_resolution = [48, 64]
