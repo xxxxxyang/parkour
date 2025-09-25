@@ -71,5 +71,7 @@ from .go1.go1_remote_config import Go1RemoteCfg, Go1RemoteCfgPPO
 task_registry.register( "go1_remote", LeggedRobot, Go1RemoteCfg(), Go1RemoteCfgPPO() )
 
 # Go2 skill tasks
+from .go2.go2_base_config import Go2BaseCfg, Go2BaseCfgPPO
+task_registry.register( "go2_base", LeggedRobot, Go2BaseCfg(), Go2BaseCfgPPO() )
 from .go2.go2_crawl_config import Go2CrawlCfg, Go2CrawlCfgPPO
 task_registry.register( "go2_crawl", RobotFieldNoisy, Go2CrawlCfg(), Go2CrawlCfgPPO() )

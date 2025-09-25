@@ -92,21 +92,23 @@ class Go2CrawlCfg( Go2FieldCfg ):
         )
 
     class rewards( Go2FieldCfg.rewards ):
-        class scales:
-            tracking_ang_vel = 0.05
-            world_vel_l2norm = -1.
-            # legs_energy_substeps = -1e-5
-            alive = 2.
-            # penetrate_depth = -6e-2 # comment this out if trianing non-virtual terrain
-            # penetrate_volume = -6e-2 # comment this out if trianing non-virtual terrain
-            exceed_dof_pos_limits = -8e-1
-            # exceed_torque_limits_i = -2e-1
-            exceed_torque_limits_l1norm = -4e-1
-            # collision = -0.05
-            # tilt_cond = 0.1
-            torques = -1e-5
-            yaw_abs = -0.1
-            lin_pos_y = -0.1
+        # class scales:
+        #     tracking_lin_vel = 1.0
+        #     tracking_ang_vel = 0.05
+        #     # world_vel_l2norm = -1.
+        #     # legs_energy_substeps = -1e-5
+        #     alive = 0.1
+        #     # penetrate_depth = -6e-2 # comment this out if trianing non-virtual terrain
+        #     # penetrate_volume = -6e-2 # comment this out if trianing non-virtual terrain
+        #     exceed_dof_pos_limits = -8e-1
+        #     # exceed_torque_limits_i = -2e-1
+        #     exceed_torque_limits_l1norm = -4e-1
+        #     # collision = -0.05
+        #     # tilt_cond = 0.1
+        #     torques = -1e-5
+        #     yaw_abs = -0.1
+        #     lin_pos_y = -0.1
+
         soft_dof_pos_limit = 0.9
 
     # class curriculum( Go2FieldCfg.curriculum ):
