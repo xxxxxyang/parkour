@@ -37,6 +37,7 @@ import isaacgym
 from legged_gym.envs import *
 from legged_gym.utils import get_args
 from legged_gym.utils.task_registry import task_registry
+from legged_gym.utils.helpers import class_to_dict
 import torch
 
 from legged_gym.debugger import break_into_debugger
@@ -49,6 +50,10 @@ def train(args):
     print("env.obs_segments:", getattr(env, "obs_segments", None))
     print("env.num_obs:", getattr(env, "num_obs", None))
     print("env.num_privileged_obs:", getattr(env, "num_privileged_obs", None))
+    reward_dict = class_to_dict(getattr(env_cfg, "rewards", None))
+    commands_dict = class_to_dict(getattr(env_cfg, "commands", None))
+    print("reward:", reward_dict)
+    print("commands:", commands_dict)
     ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, env_cfg=env_cfg)
     ppo_runner.learn(num_learning_iterations=train_cfg.runner.max_iterations, init_at_random_ep_len=True)
 
