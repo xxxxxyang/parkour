@@ -98,7 +98,7 @@ class Go2CrawlCfg( Go2FieldCfg ):
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go2CrawlCfgPPO( Go2FieldCfgPPO ):
     class algorithm( Go2FieldCfgPPO.algorithm ):
-        entropy_coef = 0.0
+        entropy_coef = 0.01
         clip_min_std = 0.1
     
     class runner( Go2FieldCfgPPO.runner ):

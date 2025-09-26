@@ -92,17 +92,17 @@ def play(args):
         env_cfg.terrain.max_init_terrain_level = 0
         env_cfg.terrain.num_rows = 4
         env_cfg.terrain.num_cols = 8
-        env_cfg.terrain.BarrierTrack_kwargs["options"] = [
-            # "jump",
-            # "leap",
-            # "down",
-            # "hurdle",
-            # "tilted_ramp",
-            # "stairsup",
-            # "discrete_rect",
-            # "wave",
-            "crawl"
-        ]
+        # env_cfg.terrain.BarrierTrack_kwargs["options"] = [
+        #     # "jump",
+        #     # "leap",
+        #     # "down",
+        #     # "hurdle",
+        #     # "tilted_ramp",
+        #     # "stairsup",
+        #     # "discrete_rect",
+        #     # "wave",
+        #     # "crawl"
+        # ]
         env_cfg.terrain.BarrierTrack_kwargs["leap"]["fake_offset"] = 0.1
         env_cfg.terrain.BarrierTrack_kwargs["draw_virtual_terrain"] = True
     else:
@@ -238,9 +238,9 @@ def play(args):
     print("torque_limits:", env.torque_limits)
     start_time = time.time_ns()
     for i in range(10*int(env.max_episode_length)):
-        if "obs_slice" in locals().keys():
-            obs_component = obs[:, obs_slice[0]].reshape(-1, *obs_slice[1])
-            print(obs_component[robot_index])
+        # if "obs_slice" in locals().keys():
+            # obs_component = obs[:, obs_slice[0]].reshape(-1, *obs_slice[1])
+            # print(obs_component[robot_index])
         actions = policy(obs.detach())
         teacher_actions = actions
         obs, critic_obs, rews, dones, infos = env.step(actions.detach())

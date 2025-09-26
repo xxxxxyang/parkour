@@ -117,8 +117,8 @@ class Go2FieldCfg( Go2BaseCfg ):
             ),
             track_width= 3.2,
             track_block_length= 2.4,
-            wall_thickness= (0.01, 0.6),
-            wall_height= [-0.5, 2.0],
+            # wall_thickness= (0.01, 0.6),
+            # wall_height= [-0.5, 2.0],
             add_perlin_noise= True,
             border_perlin_noise= True,
             border_height= 0.,
@@ -191,7 +191,7 @@ class Go2FieldCfg( Go2BaseCfg ):
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go2FieldCfgPPO( Go2BaseCfgPPO ):
     class algorithm( Go2BaseCfgPPO.algorithm ):
-        entropy_coef = 0.0
+        entropy_coef = 0.01
 
     class runner( Go2BaseCfgPPO.runner ):
         experiment_name = "field_go2"

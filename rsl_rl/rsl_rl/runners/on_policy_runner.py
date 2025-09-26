@@ -180,6 +180,19 @@ class OnPolicyRunner:
                 self.writer.add_scalar('Episode/' + key, value, self.current_learning_iteration)
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
         mean_std = self.alg.actor_critic.action_std.mean()
+        try:
+            entropy_batch = getattr(self.alg.actor_critic, "entropy", None)
+            if entropy_batch is not None:
+                entropy_mean = float(entropy_batch.mean().detach().cpu())
+                self.writer.add_scalar('Policy/entropy_mean', entropy_mean, self.current_learning_iteration)
+               # Loss/entropy and entropy_converted_to_loss have different sign convention
+                self.writer.add_scalar('Policy/entropy_converted_to_loss', -entropy_mean, self.current_learning_iteration)
+        except Exception:
+            pass
+        try:
+            self.writer.add_scalar('Policy/mean_action_std', float(mean_std.detach().cpu()), self.current_learning_iteration)
+        except Exception:
+            pass
         fps = int(self.num_steps_per_env * self.env.num_envs / (locs['collection_time'] + locs['learn_time']))
 
         for k, v in locs["losses"].items():
