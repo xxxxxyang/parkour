@@ -77,36 +77,6 @@ class Go2ClimbCfg( Go2FieldCfg ):
         ))
     
 
-    class asset( Go2FieldCfg.asset ):
-        terminate_after_contacts_on = ["base"]
-
-    class termination( Go2FieldCfg.termination ):
-        # additional factors that determines whether to terminates the episode
-        termination_terms = [
-            "roll",
-            "pitch",
-            "z_low",
-            "z_high",
-            "out_of_track",
-        ]
-        roll_kwargs = dict(
-            threshold= 1.4, # [rad]
-        )
-        pitch_kwargs = dict(
-            threshold= 1.6, # [rad]
-        )
-        z_low_kwargs = dict(
-            threshold= 0.15, # [m]
-        )
-        z_high_kwargs = dict(
-            threshold= 1.5, # [m]
-        )
-        out_of_track_kwargs = dict(
-            threshold= 1., # [m]
-        )
-        timeout_at_border = True
-        timeout_at_finished = False
-
     class domain_rand( Go2FieldCfg.domain_rand ):
         init_base_rot_range = dict(
             roll= [-0.1, 0.1],
@@ -121,8 +91,8 @@ class Go2ClimbCfg( Go2FieldCfg ):
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go2ClimbCfgPPO( Go2FieldCfgPPO ):
     class algorithm( Go2FieldCfgPPO.algorithm ):
-        entropy_coef = 0.00
-        clip_min_std = 0.1
+        entropy_coef = 0.0
+        clip_min_std = 0.2
     
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_climb"

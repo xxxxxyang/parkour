@@ -50,41 +50,6 @@ class Go2LeapCfg( Go2FieldCfg ):
             zScale= 0.12,
         ))
     
-    class commands( Go2FieldCfg.commands ):
-        class ranges( Go2FieldCfg.commands.ranges ):
-            lin_vel_x = [1.0, 1.5]
-            lin_vel_y = [0.0, 0.0]
-            ang_vel_yaw = [0., 0.]
-
-    class asset( Go2FieldCfg.asset ):
-        terminate_after_contacts_on = ["base"]
-
-    class termination( Go2FieldCfg.termination ):
-        # additional factors that determines whether to terminates the episode
-        termination_terms = [
-            "roll",
-            "pitch",
-            "z_low",
-            "z_high",
-            "out_of_track",
-        ]
-        roll_kwargs = dict(
-            threshold= 1.4, # [rad]
-        )
-        pitch_kwargs = dict(
-            threshold= 1.6, # [rad]
-        )
-        z_low_kwargs = dict(
-            threshold= 0.15, # [m]
-        )
-        z_high_kwargs = dict(
-            threshold= 1.5, # [m]
-        )
-        out_of_track_kwargs = dict(
-            threshold= 1., # [m]
-        )
-        timeout_at_border = True
-        timeout_at_finished = False
 
     class domain_rand( Go2FieldCfg.domain_rand ):
         init_base_rot_range = dict(
@@ -93,42 +58,20 @@ class Go2LeapCfg( Go2FieldCfg ):
         )
 
     class rewards( Go2FieldCfg.rewards ):
-        # class scales:
-        #     tracking_lin_vel = 1.0
-        #     tracking_ang_vel = 0.05
-        #     # world_vel_l2norm = -1.
-        #     # legs_energy_substeps = -1e-5
-        #     alive = 0.1
-        #     # penetrate_depth = -6e-2 # comment this out if trianing non-virtual terrain
-        #     # penetrate_volume = -6e-2 # comment this out if trianing non-virtual terrain
-        #     exceed_dof_pos_limits = -8e-1
-        #     # exceed_torque_limits_i = -2e-1
-        #     exceed_torque_limits_l1norm = -4e-1
-        #     # collision = -0.05
-        #     # tilt_cond = 0.1
-        #     torques = -1e-5
-        #     yaw_abs = -0.1
-        #     lin_pos_y = -0.1
-
         soft_dof_pos_limit = 0.9
 
-    # class curriculum( Go2FieldCfg.curriculum ):
-    #     penetrate_volume_threshold_harder = 1500
-    #     penetrate_volume_threshold_easier = 10000
-    #     penetrate_depth_threshold_harder = 10
-    #     penetrate_depth_threshold_easier = 400
 
 
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go2LeapCfgPPO( Go2FieldCfgPPO ):
     class algorithm( Go2FieldCfgPPO.algorithm ):
         entropy_coef = 0.0
-        clip_min_std = 0.1
+        clip_min_std = 0.2
     
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_leap"
-        resume = False
-        load_run = "{Your trained oracle parkour model directory}"
+        resume = True
+        load_run = "{Your trained walking model directory}"
         # load_run = "{Your virtually trained crawling model directory}"
 
         run_name = "".join(["Skills_",
@@ -157,5 +100,5 @@ class Go2LeapCfgPPO( Go2FieldCfgPPO ):
         ])
         max_iterations = 20000
         save_interval = 1000
-        log_interval = 100
+        log_interval = 50
     

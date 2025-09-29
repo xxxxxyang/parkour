@@ -31,6 +31,8 @@ class Go2DistillCfg( Go2FieldCfg ):
             "dof_vel",
             "last_actions",
             "height_measurements",
+            "engaging_block",
+            "sidewall_distance"
         ]
 
     class terrain( Go2FieldCfg.terrain ):
