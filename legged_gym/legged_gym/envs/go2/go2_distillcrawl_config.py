@@ -32,6 +32,8 @@ class Go2DistillCrawlCfg( Go2CrawlCfg ):
             "dof_vel",
             "last_actions",
             "height_measurements",
+            "engaging_block",
+            "sidewall_distance"
         ]
 
     class terrain( Go2CrawlCfg.terrain ):

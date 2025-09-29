@@ -191,14 +191,14 @@ class Go2FieldCfg( Go2BaseCfg ):
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go2FieldCfgPPO( Go2BaseCfgPPO ):
     class algorithm( Go2BaseCfgPPO.algorithm ):
-        entropy_coef = 0.01
+        entropy_coef = 0.0
 
     class runner( Go2BaseCfgPPO.runner ):
         experiment_name = "field_go2"
 
         resume = True
         load_run = osp.join(logs_root, "rough_go2",
-            "{Your trained walking model directory}",
+            "/home/yjh/parkour/legged_gym/logs/base_go2/Sep25_21-19-36_Go2Base_pEnergy-2e-05_pDofErr-1e-02_pDofErrN-1e+00_pStand-2e+00_noResume",
         )
 
         run_name = "".join(["Go2_",
@@ -224,7 +224,7 @@ class Go2FieldCfgPPO( Go2BaseCfgPPO ):
             ("_noResume" if not resume else "_from" + "_".join(load_run.split("/")[-1].split("_")[:2])),
         ])
 
-        max_iterations = 38000
+        max_iterations = 40000
         save_interval = 10000
-        log_interval = 100
+        log_interval = 50
         

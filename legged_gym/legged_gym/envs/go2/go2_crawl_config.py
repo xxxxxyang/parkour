@@ -47,42 +47,8 @@ class Go2CrawlCfg( Go2FieldCfg ):
         ))
 
         TerrainPerlin_kwargs = merge_dict(Go2FieldCfg.terrain.TerrainPerlin_kwargs, dict(
-            zScale= 0.12,
+            zScale= 0.07,
         ))
-    
-    class commands( Go2FieldCfg.commands ):
-        class ranges( Go2FieldCfg.commands.ranges ):
-            lin_vel_x = [0.6, 2.0]
-
-    class asset( Go2FieldCfg.asset ):
-        terminate_after_contacts_on = ["base"]
-
-    class termination( Go2FieldCfg.termination ):
-        # additional factors that determines whether to terminates the episode
-        termination_terms = [
-            "roll",
-            "pitch",
-            "z_low",
-            "z_high",
-            "out_of_track",
-        ]
-        roll_kwargs = dict(
-            threshold= 1.4, # [rad]
-        )
-        pitch_kwargs = dict(
-            threshold= 1.6, # [rad]
-        )
-        z_low_kwargs = dict(
-            threshold= 0.15, # [m]
-        )
-        z_high_kwargs = dict(
-            threshold= 1.5, # [m]
-        )
-        out_of_track_kwargs = dict(
-            threshold= 1., # [m]
-        )
-        timeout_at_border = True
-        timeout_at_finished = False
 
     class domain_rand( Go2FieldCfg.domain_rand ):
         init_base_rot_range = dict(
@@ -98,13 +64,13 @@ class Go2CrawlCfg( Go2FieldCfg ):
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go2CrawlCfgPPO( Go2FieldCfgPPO ):
     class algorithm( Go2FieldCfgPPO.algorithm ):
-        entropy_coef = 0.01
-        clip_min_std = 0.1
+        entropy_coef = 0.0
+        clip_min_std = 0.2
     
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_crawl"
         resume = True
-        load_run = "{Your trained oracle parkour model directory}"
+        load_run = "/home/yjh/parkour/legged_gym/logs/base_go2/Sep25_21-19-36_Go2Base_pEnergy-2e-05_pDofErr-1e-02_pDofErrN-1e+00_pStand-2e+00_noResume"
         # load_run = "{Your virtually trained crawling model directory}"
 
         run_name = "".join(["Skills_",
@@ -133,5 +99,5 @@ class Go2CrawlCfgPPO( Go2FieldCfgPPO ):
         ])
         max_iterations = 20000
         save_interval = 1000
-        log_interval = 100
+        log_interval = 50
     

@@ -75,3 +75,7 @@ from .go2.go2_base_config import Go2BaseCfg, Go2BaseCfgPPO
 task_registry.register( "go2_base", LeggedRobot, Go2BaseCfg(), Go2BaseCfgPPO() )
 from .go2.go2_crawl_config import Go2CrawlCfg, Go2CrawlCfgPPO
 task_registry.register( "go2_crawl", RobotFieldNoisy, Go2CrawlCfg(), Go2CrawlCfgPPO() )
+from .go2.go2_leap_config import Go2LeapCfg, Go2LeapCfgPPO
+task_registry.register( "go2_leap", RobotFieldNoisy, Go2LeapCfg(), Go2LeapCfgPPO() )
+from .go2.go2_climb_config import Go2ClimbCfg, Go2ClimbCfgPPO
+task_registry.register( "go2_climb", RobotFieldNoisy, Go2ClimbCfg(), Go2ClimbCfgPPO() )
