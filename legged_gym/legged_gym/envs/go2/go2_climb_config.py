@@ -22,7 +22,7 @@ class Go2ClimbCfg( Go2FieldCfg ):
     #### uncomment this to train non-virtual terrain
     class sensor( Go2FieldCfg.sensor ):
         class proprioception( Go2FieldCfg.sensor.proprioception ):
-            latency_range = [0.04-0.0025, 0.04+0.0075]
+            # latency_range = [0.04-0.0025, 0.04+0.0075]
             delay_action_obs = False
     #### uncomment the above to train non-virtual terrain
     
@@ -73,7 +73,7 @@ class Go2ClimbCfg( Go2FieldCfg ):
         ))
 
         TerrainPerlin_kwargs = merge_dict(Go2FieldCfg.terrain.TerrainPerlin_kwargs, dict(
-            zScale= 0.12,
+            zScale= 0.07,
         ))
     
 
