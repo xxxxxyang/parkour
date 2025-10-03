@@ -151,14 +151,14 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
         action_labels_from_sample = False
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
-        teacher_ac_path = osp.join(logs_root, "field_go2",
+        teacher_ac_path = osp.join(logs_root, "field_go2_climb",
             "{Your trained oracle parkour model directory}",
             "{The latest model filename in the directory}"
         )
 
         class teacher_policy( Go2ClimbCfgPPO.policy ):
-            num_actor_obs = 48 + 21 * 11
-            num_critic_obs = 48 + 21 * 11
+            num_actor_obs = 48 + 21 * 11 + 203 + 2
+            num_critic_obs = 48 + 21 * 11 + 203 + 2
             num_actions = 12
             obs_segments = OrderedDict([
                 ("lin_vel", (3,)),
@@ -169,6 +169,8 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
                 ("dof_vel", (12,)),
                 ("last_actions", (12,)), # till here: 3+3+3+3+12+12+12 = 48
                 ("height_measurements", (1, 21, 11)),
+                ("engaging_block", (203,)),
+                ("sidewall_distance", (2,)),
             ])
 
     class policy( Go2BaseCfgPPO.policy ):
@@ -197,7 +199,7 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
             use_maxpool = True
             nonlinearity = "LeakyReLU"
         # configs for critic encoder
-        critic_encoder_component_names = ["height_measurements"]
+        critic_encoder_component_names = ["height_measurements", "engaging_block"]
         critic_encoder_class_name = "MlpModel"
         class critic_encoder_kwargs:
             hidden_sizes = [128, 64]
@@ -224,10 +226,10 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
                 starting_frame_range = [0, 50]
 
         resume = True
-        load_run = osp.join(logs_root, "field_go2",
+        load_run = osp.join(logs_root, "field_go2_climb",
             "{Your trained oracle parkour model directory}",
         )
-        ckpt_manipulator = "replace_encoder0" if "field_go2" in load_run else None
+        ckpt_manipulator = "replace_encoder0" if "field_go2_climb" in load_run else None
 
         run_name = "".join(["Go2_",
             ("{:d}skills".format(len(Go2DistillClimbCfg.terrain.BarrierTrack_kwargs["options"]))),

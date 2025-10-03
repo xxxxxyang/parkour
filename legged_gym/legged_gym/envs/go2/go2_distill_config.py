@@ -5,7 +5,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from legged_gym.utils.helpers import merge_dict
-from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
+from legged_gym.envs.go2.go2_origin_config import Go2FieldCfg, Go2FieldCfgPPO, Go2RoughCfgPPO
 
 multi_process_ = True
 class Go2DistillCfg( Go2FieldCfg ):
@@ -31,8 +31,6 @@ class Go2DistillCfg( Go2FieldCfg ):
             "dof_vel",
             "last_actions",
             "height_measurements",
-            "engaging_block",
-            "sidewall_distance"
         ]
 
     class terrain( Go2FieldCfg.terrain ):
@@ -58,12 +56,12 @@ class Go2DistillCfg( Go2FieldCfg ):
             obs_components = ["forward_depth"]
             resolution = [int(480/4), int(640/4)]
             position = dict(
-                mean= [0.32, 0.0, 0.035],
-                std= [0.01, 0.01, 0.01],
+                mean= [0.24, -0.0175, 0.12],
+                std= [0.01, 0.0025, 0.03],
             )
             rotation = dict(
-                lower= [-0.1, -0.1, -0.1],
-                upper= [0.1, 0.1, 0.1],
+                lower= [-0.1, 0.37, -0.1],
+                upper= [0.1, 0.43, 0.1],
             )
             resized_resolution = [48, 64]
             output_resolution = [48, 64]
@@ -151,8 +149,8 @@ class Go2DistillCfgPPO( Go2FieldCfgPPO ):
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
         teacher_ac_path = osp.join(logs_root, "field_go2",
-            "{Your trained oracle parkour model directory}",
-            "{The latest model filename in the directory}"
+            "/home/yjh/parkour/legged_gym/logs/field_go2/Sep22_20-13-54_Go2_10skills_pEnergy2.e-07_pTorques-1.e-07_pLazyStop-3.e+00_pPenD5.e-02_penEasier200_penHarder100_leapHeight2.e-01_motorTorqueClip_fromSep22_17-51-58",
+            "model_30000.pt"
         )
 
         class teacher_policy( Go2FieldCfgPPO.policy ):
@@ -170,7 +168,7 @@ class Go2DistillCfgPPO( Go2FieldCfgPPO ):
                 ("height_measurements", (1, 21, 11)),
             ])
 
-    class policy( Go2BaseCfgPPO.policy ):
+    class policy( Go2RoughCfgPPO.policy ):
         # configs for estimator module
         estimator_obs_components = [
             "ang_vel",
@@ -224,7 +222,7 @@ class Go2DistillCfgPPO( Go2FieldCfgPPO ):
 
         resume = True
         load_run = osp.join(logs_root, "field_go2",
-            "{Your trained oracle parkour model directory}",
+            "/home/yjh/parkour/legged_gym/logs/field_go2/Sep22_20-13-54_Go2_10skills_pEnergy2.e-07_pTorques-1.e-07_pLazyStop-3.e+00_pPenD5.e-02_penEasier200_penHarder100_leapHeight2.e-01_motorTorqueClip_fromSep22_17-51-58",
         )
         ckpt_manipulator = "replace_encoder0" if "field_go2" in load_run else None
 

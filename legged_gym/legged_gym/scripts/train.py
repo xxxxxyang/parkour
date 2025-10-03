@@ -41,6 +41,8 @@ from legged_gym.utils.helpers import class_to_dict
 import torch
 
 from legged_gym.debugger import break_into_debugger
+import faulthandler
+faulthandler.enable()
 
 def train(args):
     env, env_cfg = task_registry.make_env(name=args.task, args=args)
@@ -59,4 +61,7 @@ def train(args):
 
 if __name__ == '__main__':
     args = get_args()
+    if args.headless:
+        print("Running in headless mode")
+        os.environ["MPLBACKEND"] = "Agg"
     train(args)

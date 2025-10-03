@@ -79,3 +79,9 @@ from .go2.go2_leap_config import Go2LeapCfg, Go2LeapCfgPPO
 task_registry.register( "go2_leap", RobotFieldNoisy, Go2LeapCfg(), Go2LeapCfgPPO() )
 from .go2.go2_climb_config import Go2ClimbCfg, Go2ClimbCfgPPO
 task_registry.register( "go2_climb", RobotFieldNoisy, Go2ClimbCfg(), Go2ClimbCfgPPO() )
+from .go2.go2_distillcrawl_config import Go2DistillCrawlCfg, Go2DistillCrawlCfgPPO
+task_registry.register( "go2_distillcrawl", RobotFieldNoisy, Go2DistillCrawlCfg(), Go2DistillCrawlCfgPPO() )
+from .go2.go2_distillleap_config import Go2DistillLeapCfg, Go2DistillLeapCfgPPO
+task_registry.register( "go2_distillleap", RobotFieldNoisy, Go2DistillLeapCfg(), Go2DistillLeapCfgPPO() )
+from .go2.go2_distillclimb_config import Go2DistillClimbCfg, Go2DistillClimbCfgPPO
+task_registry.register( "go2_distillclimb", RobotFieldNoisy, Go2DistillClimbCfg(), Go2DistillClimbCfgPPO() )

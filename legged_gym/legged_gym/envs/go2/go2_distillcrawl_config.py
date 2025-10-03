@@ -8,7 +8,7 @@ from legged_gym.utils.helpers import merge_dict
 from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
 from legged_gym.envs.go2.go2_crawl_config import Go2CrawlCfg, Go2CrawlCfgPPO
 
-multi_process_ = True
+multi_process_ = False
 class Go2DistillCrawlCfg( Go2CrawlCfg ):
     class env( Go2CrawlCfg.env ):
         num_envs = 256
@@ -151,14 +151,14 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
         action_labels_from_sample = False
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
-        teacher_ac_path = osp.join(logs_root, "field_go2",
-            "{Your trained oracle parkour model directory}",
-            "{The latest model filename in the directory}"
+        teacher_ac_path = osp.join(logs_root, "field_go2_crawl",
+            "/home/yjh/parkour/legged_gym/logs/field_go2_crawl/Sep28_20-23-15_Skills_crawl_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromSep25_21-19-36",
+            "model_22000.pt"
         )
 
         class teacher_policy( Go2CrawlCfgPPO.policy ):
-            num_actor_obs = 48 + 21 * 11
-            num_critic_obs = 48 + 21 * 11
+            num_actor_obs = 48 + 21 * 11 + 203 + 2
+            num_critic_obs = 48 + 21 * 11 + 203 + 2
             num_actions = 12
             obs_segments = OrderedDict([
                 ("lin_vel", (3,)),
@@ -169,6 +169,8 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
                 ("dof_vel", (12,)),
                 ("last_actions", (12,)), # till here: 3+3+3+3+12+12+12 = 48
                 ("height_measurements", (1, 21, 11)),
+                ("engaging_block", (203,)),
+                ("sidewall_distance", (2,)),
             ])
 
     class policy( Go2BaseCfgPPO.policy ):
@@ -197,7 +199,7 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
             use_maxpool = True
             nonlinearity = "LeakyReLU"
         # configs for critic encoder
-        critic_encoder_component_names = ["height_measurements"]
+        critic_encoder_component_names = ["height_measurements", "engaging_block"]
         critic_encoder_class_name = "MlpModel"
         class critic_encoder_kwargs:
             hidden_sizes = [128, 64]
@@ -217,17 +219,17 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
         if multi_process_:
             pretrain_iterations = -1
             class pretrain_dataset:
-                data_dir = "{A temporary directory to store collected trajectory}"
+                data_dir = "/home/yjh/parkour/legged_gym/logs/tmp"
                 dataset_loops = -1
                 random_shuffle_traj_order = True
                 keep_latest_n_trajs = 1500
                 starting_frame_range = [0, 50]
 
         resume = True
-        load_run = osp.join(logs_root, "field_go2",
-            "{Your trained oracle parkour model directory}",
+        load_run = osp.join(logs_root, "field_go2_crawl",
+            "/home/yjh/parkour/legged_gym/logs/field_go2_crawl/Sep28_20-23-15_Skills_crawl_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromSep25_21-19-36",
         )
-        ckpt_manipulator = "replace_encoder0" if "field_go2" in load_run else None
+        ckpt_manipulator = "replace_encoder0" if "field_go2_crawl" in load_run else None
 
         run_name = "".join(["Go2_",
             ("{:d}skills".format(len(Go2DistillCrawlCfg.terrain.BarrierTrack_kwargs["options"]))),
@@ -235,5 +237,5 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
         ])
 
         max_iterations = 60000
-        log_interval = 100
+        log_interval = 50
         
