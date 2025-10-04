@@ -156,7 +156,7 @@ class Go2BaseCfg( LeggedRobotCfg ):
         motor_clip_torque = True
 
     class asset( LeggedRobotCfg.asset ):
-        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/go2/urdf/go2.urdf'
+        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/go2_qrc/urdf/go2.urdf'
         name = "go2"
         foot_name = "foot"
         front_hip_names = ["FL_hip_joint", "FR_hip_joint"]
@@ -318,12 +318,23 @@ class Go2BaseCfgPPO( LeggedRobotCfgPPO ):
         resume = False
         load_run = None
 
+        # Compute urdf_tag: take the basename of the parent directory of asset.file's parent
+        # (e.g. .../go2_qrc/urdf/go2.urdf -> go2_qrc)
+        try:
+            asset_file = getattr(Go2BaseCfg.asset, "file", "")
+            # Remove template variables to obtain an operable path fragment
+            asset_file_clean = asset_file.replace("{LEGGED_GYM_ROOT_DIR}", "").replace("$LEGGED_GYM_ROOT_DIR", "")
+            urdf_tag = osp.basename(osp.dirname(osp.dirname(asset_file_clean))) or "unknown"
+        except Exception:
+            urdf_tag = "unknown"
+
         run_name = "".join(["Go2Base",
             ("_pEnergy" + np.format_float_scientific(Go2BaseCfg.rewards.scales.energy_substeps, precision= 1, trim= "-") if Go2BaseCfg.rewards.scales.energy_substeps != 0 else ""),
             ("_pDofErr" + np.format_float_scientific(Go2BaseCfg.rewards.scales.dof_error, precision= 1, trim= "-") if Go2BaseCfg.rewards.scales.dof_error != 0 else ""),
             ("_pDofErrN" + np.format_float_scientific(Go2BaseCfg.rewards.scales.dof_error_named, precision= 1, trim= "-") if Go2BaseCfg.rewards.scales.dof_error_named != 0 else ""),
             ("_pStand" + np.format_float_scientific(Go2BaseCfg.rewards.scales.stand_still, precision= 1, trim= "-") if Go2BaseCfg.rewards.scales.stand_still != 0 else ""),
             ("_noResume" if not resume else "_from" + "_".join(load_run.split("/")[-1].split("_")[:2])),
+            ("_urdf" + urdf_tag),
         ])
 
         max_iterations = 2000
