@@ -47,11 +47,11 @@ def build_actor_critic(env, policy_class_name, policy_cfg):
     else:
         num_critic_obs = env.num_obs
     if hasattr(env, "obs_segments") and "obs_segments" not in policy_cfg:
-        policy_cfg["obs_segments"] = env.obs_segments
+        policy_cfg["obs_segments"] = env.obs_segments   # distill的时候变成sgement_depth
     if hasattr(env, "privileged_obs_segments") and "privileged_obs_segments" not in policy_cfg:
         policy_cfg["privileged_obs_segments"] = env.privileged_obs_segments
     if not "num_actor_obs" in policy_cfg:
-        policy_cfg["num_actor_obs"] = env.num_obs
+        policy_cfg["num_actor_obs"] = env.num_obs   # distill变成3120
     if not "num_critic_obs" in policy_cfg:
         policy_cfg["num_critic_obs"] = num_critic_obs
     if not "num_actions" in policy_cfg:

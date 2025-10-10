@@ -56,7 +56,7 @@ class OnPolicyRunner:
         self.device = device
         self.env = env
 
-        actor_critic = modules.build_actor_critic(
+        actor_critic = modules.build_actor_critic(  # teacher / student
             self.env,
             self.cfg["policy_class_name"],
             self.policy_cfg,

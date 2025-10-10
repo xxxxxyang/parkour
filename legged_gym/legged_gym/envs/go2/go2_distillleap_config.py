@@ -8,11 +8,11 @@ from legged_gym.utils.helpers import merge_dict
 from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
 from legged_gym.envs.go2.go2_leap_config import Go2LeapCfg, Go2LeapCfgPPO
 
-multi_process_ = True
+multi_process_ = False #True
 class Go2DistillLeapCfg( Go2LeapCfg ):
     class env( Go2LeapCfg.env ):
         num_envs = 256
-        obs_components = [
+        obs_components = [  # 80
             "lin_vel",
             "ang_vel",
             "projected_gravity",
@@ -23,7 +23,7 @@ class Go2DistillLeapCfg( Go2LeapCfg ):
             "forward_depth",
         ]
 
-        privileged_obs_components = [
+        privileged_obs_components = [   # 114
             "lin_vel",
             "ang_vel",
             "projected_gravity",
@@ -152,12 +152,12 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
         teacher_ac_path = osp.join(logs_root, "field_go2",
-            "{Your trained oracle parkour model directory}",
-            "{The latest model filename in the directory}"
+            "/home/ustc/robot/code/IROS2025_Parkour/parkour/legged_gym/logs/field_go2_leap/Leap_oracle",
+            "model_22000.pt"
         )
 
         class teacher_policy( Go2LeapCfgPPO.policy ):
-            num_actor_obs = 48 + 21 * 11 + 203 + 2
+            num_actor_obs = 48 + 21 * 11 + 203 + 2  #
             num_critic_obs = 48 + 21 * 11 + 203 + 2
             num_actions = 12
             obs_segments = OrderedDict([
@@ -219,7 +219,7 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
         if multi_process_:
             pretrain_iterations = -1
             class pretrain_dataset:
-                data_dir = "{A temporary directory to store collected trajectory}"
+                data_dir = "/home/ustc/robot/code/IROS2025_Parkour/parkour/legged_gym/logs/field_go2_leap/temp"
                 dataset_loops = -1
                 random_shuffle_traj_order = True
                 keep_latest_n_trajs = 1500
@@ -227,9 +227,10 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
 
         resume = True
         load_run = osp.join(logs_root, "field_go2_leap",
-            "{Your trained oracle parkour model directory}",
+            "/home/ustc/robot/code/IROS2025_Parkour/parkour/legged_gym/logs/field_go2_leap/Leap_oracle",
         )
-        ckpt_manipulator = "replace_encoder0" if "field_go2_leap" in load_run else None
+        # ckpt_manipulator = "replace_encoder0" if "field_go2_leap" in load_run else None
+        ckpt_manipulator = "replace_encoder0"
 
         run_name = "".join(["Go2_",
             ("{:d}skills".format(len(Go2DistillLeapCfg.terrain.BarrierTrack_kwargs["options"]))),

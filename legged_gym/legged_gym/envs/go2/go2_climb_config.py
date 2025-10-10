@@ -97,8 +97,8 @@ class Go2ClimbCfgPPO( Go2FieldCfgPPO ):
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_climb"
         resume = True
-        load_run = "{Your trained walking model directory}"
-        # load_run = "{Your virtually trained crawling model directory}"
+        # load_run = "/home/ustc/robot/code/IROS2025_Parkour/parkour/legged_gym/logs/field_go2_climb/Oct08_23-32-19_Skills_Multi_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10"
+        load_run = "{Your virtually trained crawling model directory}"
 
         run_name = "".join(["Skills_",
         ("Multi" if len(Go2ClimbCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else (Go2ClimbCfg.terrain.BarrierTrack_kwargs["options"][0] if Go2ClimbCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
