@@ -72,7 +72,7 @@ class TPPO(PPO):
         self.action_labels_from_sample = action_labels_from_sample
         self.transition = ActionLabelRollout.Transition()
 
-        # build and load teacher network
+        #! build and load teacher network
         teacher_actor_critic = getattr(modules, teacher_policy_class_name)(**teacher_policy)
         if not teacher_ac_path is None:
             if "{LEGGED_GYM_ROOT_DIR}" in teacher_ac_path:

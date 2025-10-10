@@ -40,8 +40,8 @@ class EstimatorMixin:
 
     def build_estimator(self, **kwargs):
         """ This implementation is not flexible enough, but it is enough for now. """
-        estimator_input_size = get_subobs_size(self.obs_segments, self.estimator_obs_components)
-        estimator_output_size = get_subobs_size(self.obs_segments, self.estimator_target_components)
+        estimator_input_size = get_subobs_size(self.obs_segments, self.estimator_obs_components)    # 45
+        estimator_output_size = get_subobs_size(self.obs_segments, self.estimator_target_components)    # 3
         if self.is_recurrent:
             # estimate required state using a recurrent network
             if self.use_actor_rnn:
@@ -90,10 +90,10 @@ class EstimatorMixin:
             # TODO: allows non-recurrent state estimator with recurrent actor
             subobs = get_subobs_by_components(
                 observations,
-                component_names= self.estimator_obs_components,
+                component_names= self.estimator_obs_components, # [x,45]
                 obs_segments= self.obs_segments,
             )
-            input_s = self.memory_s(
+            input_s = self.memory_s(    # [x,256]
                 subobs,
                 None, # use None to prevent unpadding
                 hidden_states if hidden_states is None else hidden_states.estimator,
@@ -101,9 +101,9 @@ class EstimatorMixin:
             # QUESTION: after memory_s, the estimated_state is already unpadded. How to get
             # the padded format and feed it into actor's observation?
             # SOLUTION: modify the code of Memory module, use masks= None to stop the unpadding.
-            self.estimated_state_ = self.state_estimator(input_s)
+            self.estimated_state_ = self.state_estimator(input_s)   # [1,3]
             use_estimated_state_mask = torch.rand_like(observations[..., 0]) < self.replace_state_prob
-            observations[use_estimated_state_mask] = substitute_estimated_state(
+            observations[use_estimated_state_mask] = substitute_estimated_state(    #! estimate lin_vel with estimated_vel
                 observations[use_estimated_state_mask],
                 self.estimator_target_components,
                 self.estimated_state_[use_estimated_state_mask].detach(),

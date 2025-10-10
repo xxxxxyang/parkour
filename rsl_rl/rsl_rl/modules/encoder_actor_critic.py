@@ -44,16 +44,16 @@ class EncoderActorCriticMixin:
         self.prepare_obs_slices()
 
         super().__init__(
-            num_actor_obs - sum([s[0].stop - s[0].start for s in self.encoder_obs_slices]) + len(self.encoder_obs_slices) * self.encoder_output_size,
-            num_critic_obs if self.critic_encoder_component_names is None else num_critic_obs - sum([s[0].stop - s[0].start for s in self.critic_encoder_obs_slices]) + len(self.critic_encoder_obs_slices) * self.encoder_output_size,
+            num_actor_obs - sum([s[0].stop - s[0].start for s in self.encoder_obs_slices]) + len(self.encoder_obs_slices) * self.encoder_output_size,   # 48 + 32
+            num_critic_obs if self.critic_encoder_component_names is None else num_critic_obs - sum([s[0].stop - s[0].start for s in self.critic_encoder_obs_slices]) + len(self.critic_encoder_obs_slices) * self.encoder_output_size, # 48 + 32 + 32 + 2
             num_actions,
             obs_segments= obs_segments,
             privileged_obs_segments= privileged_obs_segments,
             **kwargs,
         )
 
-        self.encoders = self.build_encoders(
-            self.encoder_component_names,
+        self.encoders = self.build_encoders(    # 2个MLP / 1个Conv2d
+            self.encoder_component_names,   # ['height_measurements', 'engaging_block'] / ['forward_depth']
             self.encoder_class_name,
             self.encoder_obs_slices,
             self.encoder_kwargs,
@@ -104,7 +104,7 @@ class EncoderActorCriticMixin:
                 hidden_sizes = model_kwargs.pop("hidden_sizes") + [encoder_output_size,]
                 encoders.append(Conv2dHeadModel(
                     obs_slice[1],
-                    hidden_sizes= hidden_sizes,
+                    hidden_sizes= 66,#hidden_sizes,
                     output_size= None,
                     **model_kwargs,
                 ))

@@ -8,7 +8,8 @@ from legged_gym.utils.helpers import merge_dict
 from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
 from legged_gym.envs.go2.go2_climb_config import Go2ClimbCfg, Go2ClimbCfgPPO
 
-multi_process_ = True
+multi_process_ = False #True
+
 class Go2DistillClimbCfg( Go2ClimbCfg ):
     class env( Go2ClimbCfg.env ):
         num_envs = 256
@@ -152,8 +153,8 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
         teacher_ac_path = osp.join(logs_root, "field_go2_climb",
-            "{Your trained oracle parkour model directory}",
-            "{The latest model filename in the directory}"
+            "/home/ustc/robot/code/IROS2025_Parkour/parkour/legged_gym/logs/field_go2_climb/Oct08_23-32-19_Skills_Multi_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10",
+            "model_18000.pt"
         )
 
         class teacher_policy( Go2ClimbCfgPPO.policy ):
@@ -226,9 +227,10 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
                 starting_frame_range = [0, 50]
 
         resume = True
-        load_run = osp.join(logs_root, "field_go2_climb",
-            "{Your trained oracle parkour model directory}",
-        )
+        # load_run = osp.join(logs_root, "field_go2_climb",
+        #     "{Your trained oracle parkour model directory}",
+        # )
+        load_run = "/home/ustc/robot/code/IROS2025_Parkour/parkour/legged_gym/logs/field_go2_climb/Oct08_23-32-19_Skills_Multi_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10"
         ckpt_manipulator = "replace_encoder0" if "field_go2_climb" in load_run else None
 
         run_name = "".join(["Go2_",
