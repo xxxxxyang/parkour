@@ -19,6 +19,9 @@ dist/
 # Package files
 *.jar
 
+# debug files
+*.txt
+
 # Maven
 target/
 dist/
@@ -57,3 +60,5 @@ runs
 # other
 *.egg-info
 __pycache__
+
+credit.py

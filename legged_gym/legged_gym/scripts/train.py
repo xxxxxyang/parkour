@@ -46,7 +46,7 @@ faulthandler.enable()
 
 def train(args):
     env, env_cfg = task_registry.make_env(name=args.task, args=args)
-    # DEBUG: 打印 obs layout 与维度，帮助定位 RNN/模型输入不匹配问题
+    # DEBUG
     print("CONFIG task:", args.task)
     print("env_cfg.env.obs_components:", getattr(env_cfg.env, "obs_components", None))
     print("env.obs_segments:", getattr(env, "obs_segments", None))

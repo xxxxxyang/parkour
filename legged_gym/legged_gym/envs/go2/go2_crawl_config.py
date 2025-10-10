@@ -70,7 +70,7 @@ class Go2CrawlCfgPPO( Go2FieldCfgPPO ):
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_crawl"
         resume = True
-        load_run = "{Your trained walking model directory}"
+        load_run = "/home/yjh/parkour/legged_gym/logs/base_go2/Oct04_07-36-10_Go2Base_pEnergy-2e-05_pDofErr-1e-02_pDofErrN-1e+00_pStand-2e+00_noResume_urdfgo2_qrc"
         # load_run = "{Your virtually trained crawling model directory}"
 
         run_name = "".join(["Skills_",

@@ -97,7 +97,7 @@ class Go2ClimbCfgPPO( Go2FieldCfgPPO ):
     class runner( Go2FieldCfgPPO.runner ):
         experiment_name = "field_go2_climb"
         resume = True
-        load_run = "{Your trained walking model directory}"
+        load_run = "/home/yjh/parkour/legged_gym/logs/base_go2/Oct04_07-36-10_Go2Base_pEnergy-2e-05_pDofErr-1e-02_pDofErrN-1e+00_pStand-2e+00_noResume_urdfgo2_qrc"
         # load_run = "{Your virtually trained crawling model directory}"
 
         run_name = "".join(["Skills_",
@@ -124,7 +124,7 @@ class Go2ClimbCfgPPO( Go2FieldCfgPPO ):
         ("_virtual" if Go2ClimbCfg.terrain.BarrierTrack_kwargs["virtual_terrain"] else ""),
         ("_noResume" if not resume else "_from" + "_".join(load_run.split("/")[-1].split("_")[:2])),
         ])
-        max_iterations = 20000
+        max_iterations = 30000
         save_interval = 1000
         log_interval = 50
     

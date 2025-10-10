@@ -152,8 +152,8 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
         teacher_ac_path = osp.join(logs_root, "field_go2",
-            "{Your trained oracle parkour model directory}",
-            "{The latest model filename in the directory}"
+            "/home/yjh/parkour/legged_gym/logs/field_go2_leap/Oct04_17-31-34_Skills_leap_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10",
+            "model_22000.pt"
         )
 
         class teacher_policy( Go2LeapCfgPPO.policy ):
@@ -219,7 +219,7 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
         if multi_process_:
             pretrain_iterations = -1
             class pretrain_dataset:
-                data_dir = "{A temporary directory to store collected trajectory}"
+                data_dir = "/home/yjh/parkour/legged_gym/logs/tmp"
                 dataset_loops = -1
                 random_shuffle_traj_order = True
                 keep_latest_n_trajs = 1500
@@ -227,7 +227,7 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
 
         resume = True
         load_run = osp.join(logs_root, "field_go2_leap",
-            "{Your trained oracle parkour model directory}",
+            "/home/yjh/parkour/legged_gym/logs/field_go2_leap/Oct04_17-31-34_Skills_leap_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10",
         )
         ckpt_manipulator = "replace_encoder0" if "field_go2_leap" in load_run else None
 
