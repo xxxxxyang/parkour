@@ -226,7 +226,7 @@ class Go2DistillClimbCfgPPO( Go2ClimbCfgPPO ):
     class runner( Go2ClimbCfgPPO.runner ):
         policy_class_name = "EncoderStateAcRecurrent"
         algorithm_class_name = "EstimatorTPPO"
-        experiment_name = "distill_go2"
+        experiment_name = "distill_go2_climb"
         num_steps_per_env = 32
 
         if multi_process_:

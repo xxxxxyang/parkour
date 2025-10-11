@@ -64,4 +64,5 @@ if __name__ == '__main__':
     if args.headless:
         print("Running in headless mode")
         os.environ["MPLBACKEND"] = "Agg"
+    # args.task = "go2_leap"
     train(args)

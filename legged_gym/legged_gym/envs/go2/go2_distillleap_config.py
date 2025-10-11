@@ -8,11 +8,11 @@ from legged_gym.utils.helpers import merge_dict
 from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
 from legged_gym.envs.go2.go2_leap_config import Go2LeapCfg, Go2LeapCfgPPO
 
-multi_process_ = True
+multi_process_ = False #True
 class Go2DistillLeapCfg( Go2LeapCfg ):
     class env( Go2LeapCfg.env ):
         num_envs = 256
-        obs_components = [
+        obs_components = [  # 80
             "lin_vel",
             "ang_vel",
             "projected_gravity",
@@ -23,7 +23,7 @@ class Go2DistillLeapCfg( Go2LeapCfg ):
             "forward_depth",
         ]
 
-        privileged_obs_components = [
+        privileged_obs_components = [   # 114
             "lin_vel",
             "ang_vel",
             "projected_gravity",
@@ -157,7 +157,7 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
         )
 
         class teacher_policy( Go2LeapCfgPPO.policy ):
-            num_actor_obs = 48 + 21 * 11 + 203 + 2
+            num_actor_obs = 48 + 21 * 11 + 203 + 2  #
             num_critic_obs = 48 + 21 * 11 + 203 + 2
             num_actions = 12
             obs_segments = OrderedDict([
@@ -213,7 +213,7 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
     class runner( Go2LeapCfgPPO.runner ):
         policy_class_name = "EncoderStateAcRecurrent"
         algorithm_class_name = "EstimatorTPPO"
-        experiment_name = "distill_go2"
+        experiment_name = "distill_go2_leap"
         num_steps_per_env = 32
 
         if multi_process_:
@@ -229,7 +229,8 @@ class Go2DistillLeapCfgPPO( Go2LeapCfgPPO ):
         load_run = osp.join(logs_root, "field_go2_leap",
             "/home/yjh/parkour/legged_gym/logs/field_go2_leap/Oct04_17-31-34_Skills_leap_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10",
         )
-        ckpt_manipulator = "replace_encoder0" if "field_go2_leap" in load_run else None
+        # ckpt_manipulator = "replace_encoder0" if "field_go2_leap" in load_run else None
+        ckpt_manipulator = "replace_encoder0"
 
         run_name = "".join(["Go2_",
             ("{:d}skills".format(len(Go2DistillLeapCfg.terrain.BarrierTrack_kwargs["options"]))),

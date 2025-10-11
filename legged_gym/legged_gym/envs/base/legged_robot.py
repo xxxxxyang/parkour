@@ -444,7 +444,7 @@ class LeggedRobot(BaseTask):
             assert self.cfg.terrain.measure_heights, "You must set measure_heights to True in terrain config to use height_measurements observation component."
             segments["height_measurements"] = (1, len(self.cfg.terrain.measured_points_x), len(self.cfg.terrain.measured_points_y))
         if "forward_depth" in components:
-            segments["forward_depth"] = (1, *self.cfg.sensor.forward_camera.resolution)
+            segments["forward_depth"] = (1, *self.cfg.sensor.forward_camera.resolution) # [120,160]
         if "base_pose" in components:
             segments["base_pose"] = (6,) # xyz + rpy
         if "robot_config" in components:

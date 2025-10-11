@@ -8,7 +8,7 @@ from legged_gym.utils.helpers import merge_dict
 from legged_gym.envs.go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO, Go2BaseCfgPPO
 from legged_gym.envs.go2.go2_crawl_config import Go2CrawlCfg, Go2CrawlCfgPPO
 
-multi_process_ = True
+multi_process_ = False # True
 class Go2DistillCrawlCfg( Go2CrawlCfg ):
     class env( Go2CrawlCfg.env ):
         num_envs = 256
@@ -152,7 +152,7 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
 
         teacher_policy_class_name = "EncoderStateAcRecurrent"
         teacher_ac_path = osp.join(logs_root, "field_go2_crawl",
-            "/home/yjh/parkour/legged_gym/logs/field_go2_crawl/Sep28_20-23-15_Skills_crawl_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromSep25_21-19-36",
+            "/home/yjh/parkour/legged_gym/logs/field_go2_crawl/Oct08_23-34-02_Skills_crawl_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10",
             "model_22000.pt"
         )
 
@@ -213,7 +213,7 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
     class runner( Go2CrawlCfgPPO.runner ):
         policy_class_name = "EncoderStateAcRecurrent"
         algorithm_class_name = "EstimatorTPPO"
-        experiment_name = "distill_go2"
+        experiment_name = "distill_go2_crawl"
         num_steps_per_env = 32
 
         if multi_process_:
@@ -227,7 +227,7 @@ class Go2DistillCrawlCfgPPO( Go2CrawlCfgPPO ):
 
         resume = False
         load_run = osp.join(logs_root, "field_go2_crawl",
-            "/home/yjh/parkour/legged_gym/logs/field_go2_crawl/Sep28_20-23-15_Skills_crawl_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromSep25_21-19-36",
+            "/home/yjh/parkour/legged_gym/logs/field_go2_crawl/Oct08_23-34-02_Skills_crawl_comXRange-0.2-0.2_noLinVel_pDof1e-01_pTorque1e-7_pTorqueL11e-01_noDelayActObs_noTanh_fromOct04_07-36-10",
         )
         ckpt_manipulator = "replace_encoder0" if "field_go2_crawl" in load_run else None
 
